@@ -1,0 +1,7 @@
+body {
+  background: #eff9ff;
+  min-height: 100vh;
+  transition:
+    color 0.5s;
+  line-height: 1.6;
+}
