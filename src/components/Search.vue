@@ -16,8 +16,8 @@ const handleSearch = () => {
 </script>
 
 <template>
-  <div class="text-center w-[70%]">
-    <div>
+  <div class="text-center w-[70%] max-sm:w-full">
+    <div class="max-sm:flex max-sm:items-center max-sm:justify-center">
       <input
         @keyup.enter="handleSearch"
         v-model="cityInput"
@@ -25,7 +25,7 @@ const handleSearch = () => {
         type="text"
         placeholder="Enter city name"
       />
-      <Button text="Search" class="ml-2" @click="handleSearch" />
+      <Button text="Search" class="ml-2 max-sm:mt-0" @click="handleSearch" />
     </div>
     <div v-if="state.error" class="text-red-500 bg-stone-50 py-1">{{ state.error }}</div>
   </div>

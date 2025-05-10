@@ -22,9 +22,23 @@ console.log('rendered Five DayWhether');
 </script>
 
 <template>
-  <div class="flex justify-center w-full mt-[20px]">
-    <div class="1">
-      <div class="mb-4">
+  <div class="flex justify-center w-full mt-[20px] max-sm:flex-wrap">
+    <div class="mb-4 hidden max-sm:block">
+      <span
+        @click="handleClick(7)"
+        :class="{ active: showDays === 7 }"
+        class="text-stone-50 mr-1 py-[5px] px-[15px] rounded-xl cursor-pointer hover:bg-[cornflowerblue]"
+        >Week</span
+      >
+      <span
+        @click="handleClick(10)"
+        :class="{ active: showDays === 10 }"
+        class="text-stone-50 p-y-1 py-[5px] px-[15px] px-2 rounded-xl cursor-pointer hover:bg-[cornflowerblue]"
+        >10 days</span
+      >
+    </div>
+    <div class="1 max-sm:flex max-sm:overflow-x-scroll max-sm:py-[10px]">
+      <div class="mb-4 hidden sm:block sm:w-full">
         <span
           @click="handleClick(7)"
           :class="{ active: showDays === 7 }"
@@ -38,7 +52,6 @@ console.log('rendered Five DayWhether');
           >10 days</span
         >
       </div>
-      <div class="flex flex-wrap justify-center"></div>
       <FiveDayWhetherItem
         v-for="(item, index) in visibleForecast"
         :key="item.date"

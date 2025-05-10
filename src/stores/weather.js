@@ -41,7 +41,7 @@ export const useWeatherStore = defineStore('weather', () => {
 
     const weatherRes = await weatherapi(cityName, WEATHERAPI_KEY);
     if (!weatherRes.ok) {
-      throw new Error('Something went wrong!');
+      throw new Error('bed api, just reload :(');
     }
 
     const weatherData = await weatherRes.json();

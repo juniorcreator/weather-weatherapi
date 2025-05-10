@@ -31,27 +31,33 @@ const current = computed(() => state.forecast.current || {});
     <div class="bg-white/70 rounded-2xl overflow-hidden relative w-full max-w-[825px]">
       <div class="flex items-center py-[10px] bg-[#bbd4fd]/60 shadow p-4">
         <div>
-          <div class="font-bold text-3xl">
+          <div class="font-bold text-3xl max-sm:text-xl">
             {{ location.name }}, {{ location.country }} -
             <span>{{ forecastDay.day?.condition.text }}</span>
           </div>
         </div>
       </div>
 
-      <div v-if="forecastDay.day" class="flex items-top w-full py-2 px-2">
-        <div v-if="isToday" class="text-left text-6xl font-bold mr-10 w-[152px]">
+      <div v-if="forecastDay.day" class="flex items-top w-full py-2 px-2 max-md:overflow-x-scroll">
+        <div
+          v-if="isToday"
+          class="text-left text-6xl font-bold mr-10 w-[152px] max-md:min-w-[152px] max-md:overflow-x-scroll"
+        >
           <div class="flex justify-center">
             <img :src="current.condition.icon" class="w-[115px]" alt="" />
           </div>
           <div class="pl-4 text-gray-700">{{ Math.round(current.temp_c) }}°C</div>
         </div>
-        <div v-else class="w-[152px] flex items-center text-2xl font-bold mr-10">
+        <div
+          v-else
+          class="w-[152px] flex items-center text-2xl font-bold mr-10 max-md:min-w-[152px] max-md:overflow-x-scroll"
+        >
           <p class="font-bold text-center text-gray-700">
             {{ formatTextDate(forecastDay.date, 'long') }}
           </p>
         </div>
 
-        <div class="w-[135px] mt-[7px]">
+        <div class="w-[135px] mt-[7px] max-md:min-w-[135px] max-md:overflow-x-scroll">
           <div class="text-[12px] space-y-1 mt-[4px]">
             <div class="text-xs mb-1">
               <span>Max {{ Math.round(forecastDay.day.maxtemp_c) }}°C</span>
@@ -77,7 +83,9 @@ const current = computed(() => state.forecast.current || {});
           </div>
         </div>
 
-        <div class="w-[445px] flex justify-start text-xs ml-5">
+        <div
+          class="w-[445px] flex justify-start text-xs ml-5 max-md:min-w-[445px] max-md:overflow-x-scroll"
+        >
           <template v-for="(part, partKey) in partMap" :key="partKey">
             <WeatherPerDay
               v-if="partsOfDay[partKey]"
