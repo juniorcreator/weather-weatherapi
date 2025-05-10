@@ -26,7 +26,5 @@ coverage
 *.njsproj
 *.sln
 *.sw?
-vite.config.js
-src/api/weatherApi.js
 
 *.tsbuildinfo
