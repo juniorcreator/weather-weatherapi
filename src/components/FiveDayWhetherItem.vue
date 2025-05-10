@@ -1,6 +1,5 @@
 <script setup>
-import { formatDate } from '@/utils/formatDate.js';
-import WeatherIcon from '@/components/UI/WeatherIcon.vue';
+import { formatTextDate } from '@/utils/formatDate.js';
 import { RouterLink } from 'vue-router';
 defineProps(['item', 'index', 'dayOfWeek']);
 </script>
@@ -8,22 +7,26 @@ defineProps(['item', 'index', 'dayOfWeek']);
 <template>
   <RouterLink
     class="inline-block mr-1 mb-3 rounded-2xl relative"
-    :to="`${index === 0 ? '/' : `/${dayOfWeek[index].split('-')[0]}`}`"
+    :to="`${index === 0 ? '/' : `/${dayOfWeek[index]}`}`"
   >
     <div class="whether-item bg-white/70 hover:bg-[#bbd4fd]/80 rounded-2xl shadow p-3 text-center">
       <div>
         <p class="font-bold text-sm">
-          {{ formatDate(item.dt) }}
+          {{ formatTextDate(item.date) }}
         </p>
-        <WeatherIcon :data="item" :src="true" class="mx-auto w-[40px] h-[40px]" />
+        <div class="flex justify-center">
+          <img :class="`w-[50px]`" :src="item.day.condition.icon" alt="Weather icon" />
+        </div>
+
+        <p class="text-xs">{{ item.day.condition.text }}</p>
         <div class="flex justify-between">
-          <div class="text-xs mt-3">
+          <div class="text-xs mt-1">
             <span class="text-gray-500">Min</span>
-            <div class="font-bold text-sm">{{ Math.round(item.temp.min) }}°C</div>
+            <div class="font-bold text-sm">{{ Math.round(item.day.mintemp_c) }}°C</div>
           </div>
-          <div class="text-xs mt-3">
+          <div class="text-xs mt-1">
             <span class="text-gray-500">Max</span>
-            <div class="font-bold text-sm">{{ Math.round(item.temp.max) }}°C</div>
+            <div class="font-bold text-sm">{{ Math.round(item.day.maxtemp_c) }}°C</div>
           </div>
         </div>
       </div>

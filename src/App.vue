@@ -3,8 +3,8 @@ import Logo from '@/components/Logo.vue';
 import Search from '@/components/Search.vue';
 import Layout from '@/components/UI/Layout.vue';
 import Spinner from '@/components/Spinner.vue';
-import { useWhetherStore } from '@/stores/whether.js';
-const { state } = useWhetherStore();
+import { useWeatherStore } from '@/stores/weather.js';
+const { state } = useWeatherStore();
 </script>
 
 <template>
@@ -12,7 +12,7 @@ const { state } = useWhetherStore();
     <Logo />
     <Search />
     <Spinner v-if="state.loading" />
-    <RouterView />
+    <RouterView v-if="state.forecast" />
   </Layout>
 </template>
 

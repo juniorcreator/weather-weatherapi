@@ -1,7 +1,11 @@
 <script setup>
-import { useWhetherStore } from '@/stores/whether.js';
-import { ref, watch } from 'vue';
-const { state } = useWhetherStore();
+import { useWeatherStore } from '@/stores/weather.js';
+import { onMounted, ref, watch } from 'vue';
+const { state, fetchCityFromGeo } = useWeatherStore();
+
+onMounted(async () => {
+  await fetchCityFromGeo();
+});
 
 const bgA = ref('');
 const bgB = ref('');
@@ -16,10 +20,10 @@ const preloadImage = (src) => {
 };
 
 watch(
-  () => state.data,
+  () => state.cityData,
   async () => {
-    if (state.data) {
-      const newBg = `/images/bg/bg-${state.data.list[0].weather[0].icon}.png`;
+    if (state.cityData) {
+      const newBg = `/images/bg/bg-${state.cityData.list[0].weather[0].icon}.webp`;
       await preloadImage(newBg);
 
       if (useA.value) {
@@ -37,12 +41,12 @@ watch(
 <template>
   <div class="relative w-full h-full overflow-hidden">
     <div
-      class="absolute inset-0 bg-cover bg-no-repeat transition-opacity duration-1000"
+      class="absolute inset-0 bg-cover bg-no-repeat bg-center transition-opacity duration-1000"
       :class="{ 'opacity-100': useA, 'opacity-0': !useA }"
       :style="{ backgroundImage: `url(${bgA})` }"
     ></div>
     <div
-      class="absolute inset-0 bg-cover bg-no-repeat transition-opacity duration-1000"
+      class="absolute inset-0 bg-cover bg-no-repeat bg-center transition-opacity duration-1000"
       :class="{ 'opacity-100': !useA, 'opacity-0': useA }"
       :style="{ backgroundImage: `url(${bgB})` }"
     ></div>

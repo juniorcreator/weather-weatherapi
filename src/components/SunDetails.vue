@@ -1,18 +1,13 @@
 <script setup>
-import { formatLocalTime } from '@/utils/getLocalTime.js';
+import { formatSunsetTime } from '@/utils/formatDate.js';
+
 defineProps(['data', 'timezone', 'index']);
 </script>
 
 <template>
-  <div class="text-sm border-1 border-[#000] rounded-md p-1 pl-3 mb-[31px]">
-    <p>
-      Sunrise:🌅
-      {{ formatLocalTime(data[index].sunrise, timezone) }}
-    </p>
-    <p>
-      Sunset:🌇
-      {{ formatLocalTime(data[index].sunset, timezone) }}
-    </p>
+  <div class="text-sm border-1 border-[#000] rounded-md p-1 pl-1 inline-block">
+    <p>Sunrise:🌅 {{ formatSunsetTime(data[index].astro.sunrise) }}</p>
+    <p>Sunset:🌇 {{ formatSunsetTime(data[index].astro.sunset) }}</p>
   </div>
 </template>
 

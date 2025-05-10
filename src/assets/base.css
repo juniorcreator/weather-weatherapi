@@ -1,5 +1,7 @@
 body {
-  background: #eff9ff;
+  background-image: url("/images/bg/default.webp");
+  background-repeat: no-repeat;
+  background-size: cover;
   min-height: 100vh;
   transition:
     color 0.5s;

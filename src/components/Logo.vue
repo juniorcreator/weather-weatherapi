@@ -5,8 +5,10 @@ import CityTime from '@/components/CityTime.vue';
 <template>
   <header>
     <img
-      class="max-w-[230px] rounded-[15px] overflow-hidden"
-      src="/images/my-synoptic.png"
+      class="w-[230px] rounded-[15px] overflow-hidden"
+      width="230"
+      height="79"
+      src="/images/my-synoptic.webp"
       alt="Logo"
     />
     <CityTime />
