@@ -1,0 +1,22 @@
+{
+  "weather": "Weather",
+  "temperature": "Temperature",
+  "city": "City",
+  "forecast": "Forecast",
+  "SearchHistory": "Search history",
+  "chooseLanguage": "Choose language",
+  "clear": "Clear",
+  "placeholder": "Enter city name",
+  "search": "Search",
+  "week": "week",
+  "10days": "10 days",
+  "min": "Min",
+  "max": "Max",
+  "temp": "Temperature",
+  "feels": "Feels like",
+  "wind": "Wind m/s",
+  "humidity": "Humidity",
+  "pressure": "Pressure mm",
+  "sunset": "Sunset",
+  "sunrise": "Sunrise"
+}

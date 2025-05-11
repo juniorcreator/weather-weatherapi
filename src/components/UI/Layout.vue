@@ -2,9 +2,11 @@
 import { useWeatherStore } from '@/stores/weather.js';
 import { onMounted, ref, watch } from 'vue';
 const { state, fetchCityFromGeo } = useWeatherStore();
+import { useI18n } from 'vue-i18n';
+const { locale } = useI18n();
 
 onMounted(async () => {
-  await fetchCityFromGeo();
+  await fetchCityFromGeo(locale.value);
 });
 
 const bgA = ref('');

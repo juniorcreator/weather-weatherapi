@@ -6,9 +6,11 @@ import { formatTextDate } from '@/utils/formatDate.js';
 import { partMap } from '@/utils/weatherParts.js';
 import WeatherPerDay from '@/components/WeatherPerDay.vue';
 import SunDetails from '@/components/SunDetails.vue';
+import { useI18n } from 'vue-i18n';
 
 const { state } = useWeatherStore();
 const route = useRoute();
+const { locale } = useI18n();
 
 const index = computed(() => {
   const param = route.params.index;
@@ -23,6 +25,7 @@ const partsOfDay = computed(() => selectedDetail.value || {});
 
 const forecastDay = computed(() => state.forecast.forecast.forecastday?.[index.value] || {});
 const location = computed(() => state.forecast.location || {});
+const cityData = computed(() => state.cityData.city || {});
 const current = computed(() => state.forecast.current || {});
 </script>
 
@@ -32,7 +35,7 @@ const current = computed(() => state.forecast.current || {});
       <div class="flex items-center py-[10px] bg-[#bbd4fd]/60 shadow p-4">
         <div>
           <div class="font-bold text-3xl max-sm:text-xl">
-            {{ location.name }}, {{ location.country }} -
+            {{ cityData.name }}, {{ cityData.country }} -
             <span>{{ forecastDay.day?.condition.text }}</span>
           </div>
         </div>
@@ -60,25 +63,25 @@ const current = computed(() => state.forecast.current || {});
         <div class="w-[135px] mt-[7px] max-md:min-w-[135px] max-md:overflow-x-scroll">
           <div class="text-[12px] space-y-1 mt-[4px]">
             <div class="text-xs mb-1">
-              <span>Max {{ Math.round(forecastDay.day.maxtemp_c) }}°C</span>
+              <span>{{ $t('max') }} {{ Math.round(forecastDay.day.maxtemp_c) }}°C</span>
               -
-              <span>Min {{ Math.round(forecastDay.day.mintemp_c) }}°C</span>
+              <span>{{ $t('min') }} {{ Math.round(forecastDay.day.mintemp_c) }}°C</span>
             </div>
             <SunDetails :data="state.forecast.forecast.forecastday" :index="index" />
             <div class="flex justify-between text-sm mb-1">
-              <span>Temperature °C</span>
+              <span>{{ $t('temp') }} °C</span>
             </div>
             <div class="flex justify-between text-sm mb-1">
-              <span>Feels like</span>
+              <span>{{ $t('feels') }}</span>
             </div>
             <div class="flex justify-between text-sm mb-1">
-              <span>Wind m/s</span>
+              <span>{{ $t('wind') }}</span>
             </div>
             <div class="flex justify-between text-sm mb-1">
-              <span>Humidity</span>
+              <span>{{ $t('humidity') }}</span>
             </div>
             <div class="flex justify-between text-sm mb-1">
-              <span>Pressure mm</span>
+              <span>{{ $t('pressure') }}</span>
             </div>
           </div>
         </div>
@@ -99,7 +102,9 @@ const current = computed(() => state.forecast.current || {});
         </div>
       </div>
       <div class="bg-[#bbd4fd]/60 py-1 text-center">
-        <span v-if="isToday">📅 {{ formatTextDate(location.localtime, 'long') }} &nbsp;</span>
+        <span v-if="isToday"
+          >📅 {{ formatTextDate(location.localtime, 'long', 'long', locale) }} &nbsp;</span
+        >
         <span>🕒 {{ location.localtime.split(' ')[1] }}</span>
       </div>
     </div>

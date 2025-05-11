@@ -21,16 +21,6 @@ export const useWeatherStore = defineStore('weather', () => {
     loading: true,
   });
 
-  const searchHistory = ref(JSON.parse(localStorage.getItem('weatherSearchHistory')) || []);
-
-  const addToSearchHistory = (cityName) => {
-    if (!searchHistory.value.includes(cityName)) {
-      searchHistory.value.unshift(cityName);
-      if (searchHistory.value.length > 10) searchHistory.value.pop(); // лимит
-      localStorage.setItem('weatherSearchHistory', JSON.stringify(searchHistory.value));
-    }
-  };
-
   const resetDate = () => {
     state.value.cityData = null;
     state.value.forecast = null;
@@ -46,12 +36,33 @@ export const useWeatherStore = defineStore('weather', () => {
     state.value.error = null;
   };
 
-  const fetchWeatherData = async (cityName) => {
+  const fetchWeatherData = async (cityName, lang) => {
     resetError();
 
-    const weatherRes = await weatherapi(cityName, WEATHERAPI_KEY);
+    const cacheKey = `weather-${cityName.toLowerCase()}`;
+    const cachedData = sessionStorage.getItem(cacheKey);
+
+    if (cachedData) {
+      try {
+        const weatherData = JSON.parse(cachedData);
+        console.log('📦 Loaded weather from cache:', weatherData);
+
+        state.value.forecast = weatherData;
+        state.value.dayOfWeek = getWeekTextDay(weatherData.forecast.forecastday);
+        state.value.forecastDaily = formatForecast(
+          weatherData.forecast.forecastday,
+          weatherData.location.localtime,
+        );
+
+        return weatherData;
+      } catch (err) {
+        console.warn('❌ Failed to parse cached weather, fallback to API');
+      }
+    }
+
+    const weatherRes = await weatherapi(cityName, WEATHERAPI_KEY, lang);
     if (!weatherRes.ok) {
-      throw new Error('bed api, just reload or change city name. :(');
+      throw new Error('bad api, just reload or change city name. :(');
     }
 
     const weatherData = await weatherRes.json();
@@ -63,10 +74,13 @@ export const useWeatherStore = defineStore('weather', () => {
       weatherData.location.localtime,
     );
 
+    // cash
+    sessionStorage.setItem(cacheKey, JSON.stringify(weatherData));
+
     return weatherData;
   };
 
-  const fetchCityFromGeo = async () => {
+  const fetchCityFromGeo = async (lang = 'en') => {
     resetDate();
     resetError();
     setLoading(true);
@@ -76,10 +90,10 @@ export const useWeatherStore = defineStore('weather', () => {
       state.value.lat = lat;
       state.value.lon = lon;
 
-      const cityData = await getCityNameLatLon(lat, lon, OPENWEATHERMAP_KEY);
+      const cityData = await getCityNameLatLon(lat, lon, OPENWEATHERMAP_KEY, lang);
       state.value.cityData = cityData;
 
-      await fetchWeatherData(cityData.city.name);
+      await fetchWeatherData(cityData.city.name, lang);
     } catch (err) {
       setLoading(false);
       state.value.error = err.message;
@@ -90,16 +104,16 @@ export const useWeatherStore = defineStore('weather', () => {
     }
   };
 
-  const fetchCityByName = async (cityName) => {
+  const fetchCityByName = async (cityName, lang = 'en') => {
     resetDate();
     resetError();
     setLoading(true);
 
     try {
-      const weatherData = await fetchWeatherData(cityName);
+      const weatherData = await fetchWeatherData(cityName, lang);
 
       const { lat, lon } = weatherData.location;
-      state.value.cityData = await getCityNameLatLon(lat, lon, OPENWEATHERMAP_KEY);
+      state.value.cityData = await getCityNameLatLon(lat, lon, OPENWEATHERMAP_KEY, lang);
       state.value.lat = lat;
       state.value.lon = lon;
     } catch (err) {

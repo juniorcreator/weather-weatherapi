@@ -1,7 +1,21 @@
 <script setup>
 import { formatTextDate } from '@/utils/formatDate.js';
 import { RouterLink } from 'vue-router';
+import { useI18n } from 'vue-i18n';
+import { ref, watch } from 'vue';
 defineProps(['item', 'index', 'dayOfWeek']);
+
+const { locale } = useI18n();
+const values = {
+  en: 'en-US',
+  uk: 'uk-UA',
+  ru: 'ru-RU',
+};
+const resLang = ref(values[locale.value]);
+
+watch(locale, (newLocale) => {
+  resLang.value = values[newLocale];
+});
 </script>
 
 <template>
@@ -14,7 +28,7 @@ defineProps(['item', 'index', 'dayOfWeek']);
     >
       <div>
         <p class="font-bold text-sm max-sm:text-xs">
-          {{ formatTextDate(item.date) }}
+          {{ formatTextDate(item.date, 'short', 'short', resLang) }}
         </p>
         <div class="flex justify-center">
           <img class="w-[50px]" :src="item.day.condition.icon" alt="Weather icon" />
@@ -23,13 +37,13 @@ defineProps(['item', 'index', 'dayOfWeek']);
         <p class="text-xs max-sm:hidden">{{ item.day.condition.text }}</p>
         <div class="flex justify-between">
           <div class="text-xs mt-1">
-            <span class="text-gray-500 max-sm:text-xs">Min</span>
+            <span class="text-gray-500 max-sm:text-xs">{{ $t('min') }}</span>
             <div class="font-bold text-sm max-sm:text-xs">
               {{ Math.round(item.day.mintemp_c) }}°C
             </div>
           </div>
           <div class="text-xs mt-1">
-            <span class="text-gray-500 max-sm:text-xs">Max</span>
+            <span class="text-gray-500 max-sm:text-xs">{{ $t('max') }}</span>
             <div class="font-bold text-sm max-sm:text-xs">
               {{ Math.round(item.day.maxtemp_c) }}°C
             </div>

@@ -43,13 +43,13 @@ console.log('rendered Five DayWhether');
           @click="handleClick(7)"
           :class="{ active: showDays === 7 }"
           class="text-stone-50 mr-1 py-[5px] px-[15px] rounded-xl cursor-pointer hover:bg-[cornflowerblue]"
-          >Week</span
+          >{{ $t('week') }}</span
         >
         <span
           @click="handleClick(10)"
           :class="{ active: showDays === 10 }"
           class="text-stone-50 p-y-1 py-[5px] px-[15px] px-2 rounded-xl cursor-pointer hover:bg-[cornflowerblue]"
-          >10 days</span
+          >{{ $t('10days') }}</span
         >
       </div>
       <FiveDayWhetherItem

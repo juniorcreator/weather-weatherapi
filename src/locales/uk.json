@@ -1,0 +1,15 @@
+{
+  "weather": "Погода",
+  "temperature": "Температура",
+  "city": "Місто",
+  "forecast": "Прогноз",
+  "SearchHistory": "Історія пошуку",
+  "chooseLanguage": "Виберіть мову",
+  "clear": "Очистити",
+  "placeholder": "Введіть назву міста",
+  "search": "Пошук",
+  "week": "тиждень",
+  "10days": "10 днів",
+  "min": "Мін",
+  "max": "Макс"
+}

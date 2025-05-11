@@ -32,7 +32,5 @@ export function formatForecast(forecastDays, curTime) {
     closestEntry.active = true;
   }
 
-  console.log(formatted, ' formatted');
-
   return formatted;
 }

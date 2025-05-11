@@ -8,10 +8,11 @@ export const formatDate = (dt) => {
   });
 };
 
-export const formatTextDate = (dt, week = 'short', month = 'short') => {
+export const formatTextDate = (dt, week = 'short', month = 'short', lang) => {
   const date = new Date(dt); // dt —'2025-05-06'
+  // console.log(lang, ' lang in formatTextDate');
 
-  return date.toLocaleDateString('en-US', {
+  return date.toLocaleDateString(lang, {
     weekday: week,
     day: 'numeric',
     month: month,
