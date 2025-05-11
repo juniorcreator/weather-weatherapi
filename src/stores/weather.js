@@ -21,6 +21,16 @@ export const useWeatherStore = defineStore('weather', () => {
     loading: true,
   });
 
+  const searchHistory = ref(JSON.parse(localStorage.getItem('weatherSearchHistory')) || []);
+
+  const addToSearchHistory = (cityName) => {
+    if (!searchHistory.value.includes(cityName)) {
+      searchHistory.value.unshift(cityName);
+      if (searchHistory.value.length > 10) searchHistory.value.pop(); // лимит
+      localStorage.setItem('weatherSearchHistory', JSON.stringify(searchHistory.value));
+    }
+  };
+
   const resetDate = () => {
     state.value.cityData = null;
     state.value.forecast = null;
@@ -41,7 +51,7 @@ export const useWeatherStore = defineStore('weather', () => {
 
     const weatherRes = await weatherapi(cityName, WEATHERAPI_KEY);
     if (!weatherRes.ok) {
-      throw new Error('bed api, just reload :(');
+      throw new Error('bed api, just reload or change city name. :(');
     }
 
     const weatherData = await weatherRes.json();

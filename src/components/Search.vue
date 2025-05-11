@@ -8,6 +8,30 @@ const { state, fetchCityByName } = useWeatherStore();
 const cityInput = ref('');
 const router = useRouter();
 
+const query = ref('');
+const suggestions = ref([]);
+
+const onInput = async () => {
+  if (query.value.length < 2) return;
+  const res = await fetch(
+    `https://api.openweathermap.org/geo/1.0/direct?q=${query.value}&limit=5&appid=${import.meta.env.VITE_OPENWEATHERMAP_KEY}`,
+  );
+  const data = await res.json();
+  suggestions.value = data.map((item) => ({
+    name: item.name,
+    country: item.country,
+    lat: item.lat,
+    lon: item.lon,
+  }));
+};
+
+const selectCity = async (cityName) => {
+  query.value = cityName;
+  suggestions.value = [];
+  await store.fetchCityByName(cityName);
+  store.addToSearchHistory(cityName);
+};
+
 const handleSearch = () => {
   if (!cityInput.value) return;
   router.push('/');
