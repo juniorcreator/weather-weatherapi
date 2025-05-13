@@ -9,8 +9,8 @@ const { state } = useWeatherStore();
     class="mt-[10px] max-w-[150px] bg-white rounded-[10px] border-3 border-[#bbd4fd]/90 p-[5px] text-center text-base font-bold"
     v-if="state.cityData"
   >
-    {{ state.cityData?.city.name }} <span>&#128339;</span>
-    {{ getLocalTimeNow() }}
+    {{ state.cityData.city.name }} <span>&#128339;</span>
+    {{ getLocalTimeNow(state.cityData.city.timezone) }}
   </h3>
 </template>
 

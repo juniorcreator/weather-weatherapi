@@ -55,9 +55,10 @@ export const formatSunsetTimeDt = (unixTime, timezoneOffset = 0) => {
   return `${hours}:${minutes}`;
 };
 
-export const getLocalTimeNow = () => {
-  const now = new Date();
-  const hours = String(now.getHours()).padStart(2, '0');
-  const minutes = String(now.getMinutes()).padStart(2, '0');
+export const getLocalTimeNow = (timezoneOffset = 0) => {
+  const nowUTC = new Date(new Date().getTime() + new Date().getTimezoneOffset() * 60000);
+  const localTime = new Date(nowUTC.getTime() + timezoneOffset * 1000);
+  const hours = String(localTime.getHours()).padStart(2, '0');
+  const minutes = String(localTime.getMinutes()).padStart(2, '0');
   return `${hours}:${minutes}`;
 };

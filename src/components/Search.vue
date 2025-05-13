@@ -71,7 +71,7 @@ console.log(searchHistory, ' searchHistory in search');
           @input="onInput"
           @keydown.enter="selectCity(query)"
           type="text"
-          class="text-stone-50 w-[100%] max-w-[400px] border-2 border-stone-50 py-[5px] px-[10px] rounded-[10px] shadow focus:outline-none focus:ring-2 focus:ring-blue-500"
+          class="text-stone-50 w-[100%] max-w-[400px] border-2 border-stone-50 py-[5px] px-[10px] rounded-[10px] shadow focus:outline-none focus:ring-2 focus:ring-blue-500 max-sm:mb-2"
           :placeholder="$t('placeholder')"
         />
         <Button :text="$t('search')" class="ml-2 max-sm:mt-0" @click="selectCity(query)" />

@@ -2,12 +2,29 @@
 import { computed } from 'vue';
 import { useWeatherStore } from '@/stores/weather.js';
 
+const weatherStore = useWeatherStore();
+
 const props = defineProps({
   hourly: Array,
   timezone: Number,
+  index: Number,
 });
 
-const upcomingHours = computed(() => props.hourly.slice(0, 24));
+const getLocalDate = (dt, offset) => {
+  const local = new Date(dt * 1000 + offset * 1000);
+  return local.toISOString().split('T')[0];
+};
+
+const getDateFromIndex = (index) => {
+  const dailyForecast = weatherStore.state.oneCallData?.daily?.[index];
+  return dailyForecast ? getLocalDate(dailyForecast.dt, props.timezone) : null;
+};
+
+const activeDate = computed(() => getDateFromIndex(props.index));
+
+const upcomingHours = computed(() =>
+  props.hourly.filter((h) => getLocalDate(h.dt, props.timezone) === activeDate.value),
+);
 
 const formatHour = (dt) => {
   const date = new Date((dt + props.timezone) * 1000);

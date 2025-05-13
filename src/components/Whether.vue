@@ -23,7 +23,7 @@ const current = computed(() => state.oneCallData?.current || {});
 </script>
 
 <template>
-  <div class="flex justify-center mt-2 w-full text-[18px] max-md:scale-95 max-sm:scale-90">
+  <div class="flex justify-center mt-2 w-full text-[18px] max-md:scale-95">
     <div class="bg-white/70 rounded-2xl overflow-hidden relative w-full max-w-[930px]">
       <div class="flex items-center py-[10px] bg-[#bbd4fd]/60 shadow p-4">
         <div>
@@ -115,9 +115,10 @@ const current = computed(() => state.oneCallData?.current || {});
           class="w-[550px] min-w-[550px] flex flex-wrap justify-start text-xs max-md:min-w-[445px] max-md:overflow-x-scroll"
         >
           <HourlyForecast
-            v-if="index < 2"
+            v-if="index < 3"
             :hourly="state.oneCallData.hourly"
             :timezone="state.oneCallData.timezone_offset"
+            :index="index"
           />
           <div v-else class="22 w-full">
             <div class="overflow-x-auto rounded-xl shadow-md bg-[#bbd4fd]/40 backdrop-blur-md mb-2">
@@ -162,17 +163,11 @@ const current = computed(() => state.oneCallData?.current || {});
         <span
           >📅
           {{
-            formatTextDateDt(
-              forecastDay.dt,
-              state.oneCallData.timezone_offset,
-              'long',
-              'long',
-              locale,
-            )
+            formatTextDateDt(forecastDay.dt, state.cityData.city.timezone, 'long', 'long', locale)
           }}
           &nbsp;</span
         >
-        <span v-if="isToday">🕒 {{ getLocalTimeNow() }}</span>
+        <span v-if="isToday">🕒 {{ getLocalTimeNow(state.cityData.city.timezone) }}</span>
       </div>
     </div>
   </div>

@@ -10,11 +10,11 @@ const { state } = useWeatherStore();
 
 <template>
   <Layout>
-    <!--    <div class="text-white">-->
-    <!--      <button @click="formatDate(1747141200, ' one')">One</button>-->
-    <!--      <br />-->
-    <!--      <button @click="formatDate(1747087200, ' two')">two</button>-->
-    <!--    </div>-->
+    <div class="text-white">
+      <button @click="formatDate(1747155600, ' one')">One</button>
+      <br />
+      <button @click="formatDate(1747159200, ' two')">two</button>
+    </div>
     <Logo />
     <Search />
     <Spinner v-if="state.loading" />
