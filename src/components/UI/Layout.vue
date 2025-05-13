@@ -22,10 +22,10 @@ const preloadImage = (src) => {
 };
 
 watch(
-  () => state.cityData,
+  () => state.oneCallData,
   async () => {
-    if (state.cityData) {
-      const newBg = `/images/bg/bg-${state.cityData.list[0].weather[0].icon}.webp`;
+    if (state.oneCallData) {
+      const newBg = `/images/bg/bg-${state.oneCallData.current.weather[0].icon}.webp`;
       await preloadImage(newBg);
 
       if (useA.value) {

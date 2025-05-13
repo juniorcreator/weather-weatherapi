@@ -1,128 +1,99 @@
-import { ref } from 'vue';
+import { reactive } from 'vue';
 import { defineStore } from 'pinia';
-import { getGeolocation } from '@/utils/getGeolocation.js';
-import { getWeekTextDay } from '@/utils/weekdayFromDate.js';
-import { weatherapi } from '@/api/weatherApi.js';
-import { getCityNameLatLon } from '@/api/geCityNameLatLon.js';
-import { formatForecast } from '@/utils/formatForecast.js';
-
-const WEATHERAPI_KEY = import.meta.env.VITE_WEATHERAPI_KEY;
-const OPENWEATHERMAP_KEY = import.meta.env.VITE_OPENWEATHERMAP_KEY;
+import { getWeekTextDayDt } from '@/utils/weekdayFromDate.js';
+import { getCityGeoByName, getCityNameLatLon, getGeolocation, oneCallApi } from '@/api/weather.js';
 
 export const useWeatherStore = defineStore('weather', () => {
-  const state = ref({
+  const state = reactive({
     lat: null,
     lon: null,
     cityData: null,
-    forecast: null,
-    forecastDaily: null,
     dayOfWeek: [],
     error: null,
-    loading: true,
+    loading: false,
+    oneCallData: null,
+    geoByCityName: null,
   });
 
   const resetDate = () => {
-    state.value.cityData = null;
-    state.value.forecast = null;
-    state.value.forecastDaily = null;
-    state.value.dayOfWeek = [];
+    state.oneCallData = null;
+    state.cityData = null;
+    state.dayOfWeek = [];
   };
 
-  const setLoading = (bool) => {
-    state.value.loading = bool;
-  };
-
-  const resetError = () => {
-    state.value.error = null;
-  };
+  const resetError = () => (state.error = null);
 
   const fetchWeatherData = async (cityName, lang) => {
     resetError();
-
     const cacheKey = `weather-${cityName.toLowerCase()}`;
     const cachedData = sessionStorage.getItem(cacheKey);
 
     if (cachedData) {
       try {
-        const weatherData = JSON.parse(cachedData);
-        console.log('📦 Loaded weather from cache:', weatherData);
-
-        state.value.forecast = weatherData;
-        state.value.dayOfWeek = getWeekTextDay(weatherData.forecast.forecastday);
-        state.value.forecastDaily = formatForecast(
-          weatherData.forecast.forecastday,
-          weatherData.location.localtime,
-        );
-
-        return weatherData;
-      } catch (err) {
+        const parsed = JSON.parse(cachedData);
+        state.oneCallData = parsed;
+        state.dayOfWeek = getWeekTextDayDt(parsed.daily);
+        console.log('📦 Loaded weather from cache');
+        return parsed;
+      } catch (e) {
         console.warn('❌ Failed to parse cached weather, fallback to API');
       }
     }
 
-    const weatherRes = await weatherapi(cityName, WEATHERAPI_KEY, lang);
-    if (!weatherRes.ok) {
-      throw new Error('bad api, just reload or change city name. :(');
+    const res = await oneCallApi(state.lat, state.lon, lang);
+    if (res) {
+      state.oneCallData = res;
+      state.dayOfWeek = getWeekTextDayDt(res.daily);
+      sessionStorage.setItem(cacheKey, JSON.stringify(res));
     }
-
-    const weatherData = await weatherRes.json();
-
-    state.value.forecast = weatherData;
-    state.value.dayOfWeek = getWeekTextDay(weatherData.forecast.forecastday);
-    state.value.forecastDaily = formatForecast(
-      weatherData.forecast.forecastday,
-      weatherData.location.localtime,
-    );
-
-    // cash
-    sessionStorage.setItem(cacheKey, JSON.stringify(weatherData));
-
-    return weatherData;
+    return res;
   };
 
   const fetchCityFromGeo = async (lang = 'en') => {
     resetDate();
     resetError();
-    setLoading(true);
+    state.loading = true;
 
     try {
       const { lat, lon } = await getGeolocation();
-      state.value.lat = lat;
-      state.value.lon = lon;
+      state.lat = lat;
+      state.lon = lon;
 
-      const cityData = await getCityNameLatLon(lat, lon, OPENWEATHERMAP_KEY, lang);
-      state.value.cityData = cityData;
+      const cityData = await getCityNameLatLon(lat, lon, lang);
+      state.cityData = cityData;
 
       await fetchWeatherData(cityData.city.name, lang);
     } catch (err) {
-      setLoading(false);
-      state.value.error = err.message;
-      console.error('Error when try get geolocation', err);
+      state.error = err.message;
       throw err;
     } finally {
-      setLoading(false);
+      state.loading = false;
     }
   };
 
   const fetchCityByName = async (cityName, lang = 'en') => {
     resetDate();
     resetError();
-    setLoading(true);
+    state.loading = true;
 
     try {
-      const weatherData = await fetchWeatherData(cityName, lang);
+      const geo = await getCityGeoByName(cityName);
+      const { lat, lon } = geo[0] || {};
 
-      const { lat, lon } = weatherData.location;
-      state.value.cityData = await getCityNameLatLon(lat, lon, OPENWEATHERMAP_KEY, lang);
-      state.value.lat = lat;
-      state.value.lon = lon;
+      if (!lat || !lon) throw new Error('City not found');
+
+      state.lat = lat;
+      state.lon = lon;
+      state.geoByCityName = geo;
+
+      state.cityData = await getCityNameLatLon(lat, lon, lang);
+
+      await fetchWeatherData(cityName, lang);
     } catch (err) {
-      setLoading(false);
-      state.value.error = err.message;
-      console.error('Wrong city name...', err);
+      state.error = err.message;
       throw err;
     } finally {
-      setLoading(false);
+      state.loading = false;
     }
   };
 

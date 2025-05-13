@@ -7,47 +7,48 @@ import { ref, computed } from 'vue';
 
 const { state } = useWeatherStore();
 const router = useRouter();
-const showDays = ref(7);
+const showDays = ref(JSON.parse(localStorage.getItem('showDays')) || 7);
 
 const visibleForecast = computed(() => {
-  return state.forecast?.forecast.forecastday.slice(0, showDays.value);
+  return state.oneCallData?.daily.slice(0, showDays.value);
 });
 
 const handleClick = (value) => {
   router.push('/');
   showDays.value = value;
+  localStorage.setItem('showDays', showDays.value);
 };
 
 console.log('rendered Five DayWhether');
 </script>
 
 <template>
-  <div class="flex justify-center w-full mt-[20px] max-sm:flex-wrap">
-    <div class="mb-4 hidden max-sm:block">
+  <div class="flex justify-center w-full mt-[20px] max-md:flex-wrap">
+    <div class="mb-2 hidden max-md:block w-full">
       <span
-        @click="handleClick(7)"
-        :class="{ active: showDays === 7 }"
+        @click="handleClick(3)"
+        :class="{ active: showDays === 3 }"
         class="text-stone-50 mr-1 py-[5px] px-[15px] rounded-xl cursor-pointer hover:bg-[cornflowerblue]"
-        >Week</span
+        >{{ $t('week') }}</span
       >
       <span
-        @click="handleClick(10)"
-        :class="{ active: showDays === 10 }"
+        @click="handleClick(8)"
+        :class="{ active: showDays === 8 }"
         class="text-stone-50 p-y-1 py-[5px] px-[15px] px-2 rounded-xl cursor-pointer hover:bg-[cornflowerblue]"
-        >10 days</span
+        >{{ $t('10days') }}</span
       >
     </div>
-    <div class="1 max-sm:flex max-sm:overflow-x-scroll max-sm:py-[10px]">
-      <div class="mb-4 hidden sm:block sm:w-full">
+    <div class="1 max-md:flex max-md:overflow-x-scroll max-md:pt-[10px] max-md:w-full">
+      <div class="mb-4 hidden md:block md:w-full">
         <span
-          @click="handleClick(7)"
-          :class="{ active: showDays === 7 }"
+          @click="handleClick(3)"
+          :class="{ active: showDays === 3 }"
           class="text-stone-50 mr-1 py-[5px] px-[15px] rounded-xl cursor-pointer hover:bg-[cornflowerblue]"
           >{{ $t('week') }}</span
         >
         <span
-          @click="handleClick(10)"
-          :class="{ active: showDays === 10 }"
+          @click="handleClick(8)"
+          :class="{ active: showDays === 8 }"
           class="text-stone-50 p-y-1 py-[5px] px-[15px] px-2 rounded-xl cursor-pointer hover:bg-[cornflowerblue]"
           >{{ $t('10days') }}</span
         >
@@ -61,7 +62,7 @@ console.log('rendered Five DayWhether');
       />
     </div>
   </div>
-  <Whether v-if="state.forecast" />
+  <Whether v-if="state.oneCallData" />
 </template>
 
 <style scoped>

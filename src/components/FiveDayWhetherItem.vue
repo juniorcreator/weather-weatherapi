@@ -1,9 +1,11 @@
 <script setup>
-import { formatTextDate } from '@/utils/formatDate.js';
+import { formatTextDate, formatTextDateDt } from '@/utils/formatDate.js';
 import { RouterLink } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { ref, watch } from 'vue';
-defineProps(['item', 'index', 'dayOfWeek']);
+defineProps(['item', 'index', 'dayOfWeek', 'firstElement']);
+import { useWeatherStore } from '@/stores/weather.js';
+const { state } = useWeatherStore();
 
 const { locale } = useI18n();
 const values = {
@@ -20,7 +22,7 @@ watch(locale, (newLocale) => {
 
 <template>
   <RouterLink
-    class="inline-block mr-1 mb-3 rounded-2xl relative max-sm:min-w-[75px]"
+    class="inline-block mr-1 mb-3 max-md:mb-0 rounded-2xl relative max-sm:min-w-[75px]"
     :to="`${index === 0 ? '/' : `/${dayOfWeek[index]}`}`"
   >
     <div
@@ -28,25 +30,31 @@ watch(locale, (newLocale) => {
     >
       <div>
         <p class="font-bold text-sm max-sm:text-xs">
-          {{ formatTextDate(item.date, 'short', 'short', resLang) }}
+          {{ formatTextDateDt(item.dt, item.timezone_offset, 'short', 'short', resLang) }}
         </p>
         <div class="flex justify-center">
-          <img class="w-[50px]" :src="item.day.condition.icon" alt="Weather icon" />
+          <img
+            class="w-[50px]"
+            :src="`https://openweathermap.org/img/wn/${index === 0 ? state.oneCallData.current.weather[0].icon : item.weather[0].icon}.png`"
+            alt="Weather icon"
+          />
         </div>
 
-        <p class="text-xs max-sm:hidden">{{ item.day.condition.text }}</p>
+        <p class="text-xs max-sm:hidden w-[90px] h-[32px]">
+          {{
+            index === 0
+              ? state.oneCallData.current.weather[0].description
+              : item.weather[0].description
+          }}
+        </p>
         <div class="flex justify-between">
           <div class="text-xs mt-1">
             <span class="text-gray-500 max-sm:text-xs">{{ $t('min') }}</span>
-            <div class="font-bold text-sm max-sm:text-xs">
-              {{ Math.round(item.day.mintemp_c) }}°C
-            </div>
+            <div class="font-bold text-sm max-sm:text-xs">{{ Math.round(item.temp.min) }}°C</div>
           </div>
           <div class="text-xs mt-1">
             <span class="text-gray-500 max-sm:text-xs">{{ $t('max') }}</span>
-            <div class="font-bold text-sm max-sm:text-xs">
-              {{ Math.round(item.day.maxtemp_c) }}°C
-            </div>
+            <div class="font-bold text-sm max-sm:text-xs">{{ Math.round(item.temp.max) }}°C</div>
           </div>
         </div>
       </div>

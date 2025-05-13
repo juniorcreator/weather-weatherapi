@@ -63,9 +63,9 @@ console.log(searchHistory, ' searchHistory in search');
 </script>
 
 <template>
-  <div class="text-center w-[70%] max-sm:w-full flex justify-center flex-wrap">
+  <div class="text-center w-[70%] max-md:w-full flex justify-center flex-wrap">
     <div class="max-w-[500px] w-full">
-      <div class="max-sm:flex max-sm:flex-wrap max-sm:items-center max-sm:justify-center relative">
+      <div class="max-md:flex max-md:flex-wrap max-md:items-center max-md:justify-center relative">
         <input
           v-model="query"
           @input="onInput"
@@ -105,7 +105,7 @@ console.log(searchHistory, ' searchHistory in search');
               :key="index"
               @click="selectCity(city)"
               :class="[
-                'cursor-pointer text-sm px-3 py-1 rounded-full transition',
+                'cursor-pointer text-xs px-2 py-1 rounded-full transition',
                 city === activeCity
                   ? 'bg-[cornflowerblue] text-white pointer-events-none'
                   : 'bg-gray-100 hover:bg-gray-200 text-black',
